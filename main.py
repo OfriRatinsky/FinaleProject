@@ -56,7 +56,7 @@ if __name__ == '__main__':
     s.robot = Poppy()
 
     # Adaptation variables
-    s.adaptive = True
+    s.adaptive = False
     s.corrective_feedback = False
     s.one_hand = False
     if s.adaptive:

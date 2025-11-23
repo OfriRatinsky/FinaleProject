@@ -123,8 +123,10 @@ class Training(threading.Thread):
     def training_session(self):
         print("Training: start exercises")
         # TODO - adding random choice of exercises.
-        exercise_names = ["raise_arms_horizontally", "bend_elbows", "raise_arms_bend_elbows", "open_and_close_arms",
-                          "open_and_close_arms_90", "raise_arms_forward"]
+        #exercise_names = ["raise_arms_horizontally", "bend_elbows", "raise_arms_bend_elbows", "open_and_close_arms",
+        #                  "open_and_close_arms_90", "raise_arms_forward"]
+        #exercise_names = ["raise_arms_horizontally"]
+        exercise_names = ["claps"]
         for e in exercise_names:
             time.sleep(2) # wait between exercises
             self.run_exercise(e)

@@ -1,5 +1,5 @@
 import threading
-from pypot.creatures import PoppyTorso
+from poppy_torso import PoppyTorso
 import time
 import Settings as s
 from Audio import say
@@ -9,8 +9,8 @@ class Poppy(threading.Thread):
 
     def __init__(self):
         threading.Thread.__init__(self)
-        self.poppy = PoppyTorso()  # for real robot
-        # self.poppy = PoppyTorso(simulator='vrep')  # for simulator
+        #self.poppy = PoppyTorso()  # for real robot
+        self.poppy = PoppyTorso(simulator='vrep')  # for simulator
         print("ROBOT INITIALIZATION")
         for m in self.poppy.motors:  # motors need to be initialized, False=stiff, True=loose
             m.compliant = False
@@ -65,6 +65,40 @@ class Poppy(threading.Thread):
         self.poppy.r_elbow_y.goto_position(90, 1.5, wait=False)
         self.poppy.r_arm_z.goto_position(0, 1.5, wait=False)
 
+    #תרגיל שלנוווו
+    def claps(self, counter):
+        if(counter == 0):
+            hands_open = [self.poppy.l_shoulder_x.goto_position(90, 1.5, wait=False),
+                        self.poppy.l_shoulder_y.goto_position(-90, 1.5, wait=False),
+                        self.poppy.l_elbow_y.goto_position(90, 1.5, wait=False),
+                        self.poppy.r_shoulder_x.goto_position(-90, 1.5, wait=False),
+                        self.poppy.r_shoulder_y.goto_position(-90, 1.5, wait=False),
+                        self.poppy.r_elbow_y.goto_position(90, 1.5, wait=False)] 
+        time.sleep(2)    
+        hands_close = [self.poppy.l_shoulder_x.goto_position(-10, 1.5, wait=False),
+                        self.poppy.l_shoulder_y.goto_position(-90, 1.5, wait=False),
+                        self.poppy.l_elbow_y.goto_position(90, 1.5, wait=False),
+                        self.poppy.r_shoulder_x.goto_position(10, 1.5, wait=False),
+                        self.poppy.r_shoulder_y.goto_position(-90, 1.5, wait=False),
+                        self.poppy.r_elbow_y.goto_position(90, 1.5, wait=False)]
+        time.sleep(2)
+        hands_open = [self.poppy.l_shoulder_x.goto_position(90, 1.5, wait=False),
+                        self.poppy.l_shoulder_y.goto_position(-90, 1.5, wait=False),
+                        self.poppy.l_elbow_y.goto_position(90, 1.5, wait=False),
+                        self.poppy.r_shoulder_x.goto_position(-90, 1.5, wait=False),
+                        self.poppy.r_shoulder_y.goto_position(-90, 1.5, wait=False),
+                        self.poppy.r_elbow_y.goto_position(90, 1.5, wait=False)]
+                        
+        if counter >= s.rep-1 or s.success_exercise:  # TODO - Change to something that works if it finished before 8 repetitions.
+            self.poppy.l_shoulder_y.goto_position(0, 2, wait=False)
+            self.poppy.r_shoulder_y.goto_position(0, 2, wait=False)
+            self.poppy.l_shoulder_x.goto_position(0, 2, wait=False)
+            self.poppy.r_shoulder_x.goto_position(0, 2, wait=True)
+        if s.robot_count:
+            say(str(counter + 1))
+        time.sleep(1.8)  
+            
+
     # EX1 - Raise arms horizontally
     def raise_arms_horizontally(self, counter):
         hands_up = [self.poppy.l_shoulder_x.goto_position(90, 1.5, wait=False),
@@ -79,7 +113,7 @@ class Poppy(threading.Thread):
         if s.robot_count:
             say(str(counter + 1))
         time.sleep(1.8)
-
+    
     # EX2 - Bend Elbows
     def bend_elbows(self, counter):
         self.poppy.r_arm[3].goto_position(-60, 1.5, wait=False)
@@ -298,7 +332,7 @@ if __name__ == "__main__":
     robot = Poppy()
 
     # robot.exercise_demo("open_and_close_arms_90")
-    robot.exercise_demo("raise_arms_horizontally")
+    robot.exercise_demo("open_and_close_arms")
     # robot.start()
     time.sleep(10)
 

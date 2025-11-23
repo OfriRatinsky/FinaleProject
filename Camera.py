@@ -238,7 +238,12 @@ class Camera(threading.Thread):
             self.classify_performance(list_joints, exercise_name, 6, 7, counter)
         s.ex_list.append([exercise_name, counter])
         Excel.wf_joints(exercise_name, list_joints)
-
+    
+    #שלנווו
+    def claps(self):
+        self.exercise_two_angles_3d("claps", "Hip", "Shoulder", "Wrist", 80, 140, 80, 140,
+                                    "Shoulder", "Shoulder", "Wrist", 80, 110, 150, 180, "first", True)
+        
     def raise_arms_horizontally(self):
         self.exercise_two_angles_3d("raise_arms_horizontally", "Hip", "Shoulder", "Wrist", 80, 105, 5, 30,
                                     "Shoulder", "Shoulder", "Wrist", 150, 180, 80, 110, "first", True)
@@ -385,7 +390,7 @@ if __name__ == '__main__':
         s.rep = 2
         s.corrective_feedback = False
         s.one_hand = 'right'
-        s.req_exercise = "raise_arms_bend_elbows_one_hand"
+        s.req_exercise = "claps"
         s.robot_count = False
         Excel.create_workbook()
         s.ex_list = []
