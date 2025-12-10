@@ -23,6 +23,9 @@ def __init__():
     global robot_count
     global try_again # Adaptive scenario - successful performance
     global robot_rep # number of repetition of the robot
+    global team
+
+    global have_voice #for audio failure
 
     # audio variables
     global audio_path

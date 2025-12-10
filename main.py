@@ -34,7 +34,7 @@ if __name__ == '__main__':
                          str(current_time.minute) + "." + str(current_time.second)
 
     # Training variables initialization
-    s.exercise_amount = 6
+    s.exercise_amount = 6 #מתוקן לכמות שאנחנו עושות
     s.rep = 8
     s.req_exercise = ""
     s.finish_workout = False
@@ -46,6 +46,8 @@ if __name__ == '__main__':
     s.camera_done = False
     s.robot_count = True
     s.try_again = False
+    s.team = 1 #הוספתי
+    s.have_voice = True #הוספתי
     # Excel variable
     Excel.create_workbook()
     s.ex_list = []
@@ -56,12 +58,12 @@ if __name__ == '__main__':
     s.robot = Poppy()
 
     # Adaptation variables
-    s.adaptive = False
+#    s.adaptive = False #אצל הבנים true
     s.corrective_feedback = False
     s.one_hand = False
-    if s.adaptive:
-        s.adaptation_model_name = 'performance_evaluation_model'
-        s.performance_class = {}
+#    if s.adaptive:
+#        s.adaptation_model_name = 'performance_evaluation_model'
+#        s.performance_class = {} #מה זה??
         # s.adaptation_model = pickle.load(open(f'{adaptation_model_name}.sav', 'rb'))
 
     # Start all threads
