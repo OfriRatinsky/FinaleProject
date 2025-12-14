@@ -14,7 +14,7 @@ class Training(threading.Thread):
         threading.Thread.__init__(self)
 
     def run(self):
-        print("TRAINING START")
+        print("TRAINING START")#
         self.run_exercise("hello_waving")
         print("Training: start waving")
         while not s.waved:
