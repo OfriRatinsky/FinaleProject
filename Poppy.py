@@ -65,39 +65,6 @@ class Poppy(threading.Thread):
         self.poppy.r_elbow_y.goto_position(90, 1.5, wait=False)
         self.poppy.r_arm_z.goto_position(0, 1.5, wait=False)
 
-    #תרגיל שלנוווו
-    def claps(self, counter):
-        if(counter == 0):
-            hands_open = [self.poppy.l_shoulder_x.goto_position(90, 1.5, wait=False),
-                        self.poppy.l_shoulder_y.goto_position(-90, 1.5, wait=False),
-                        self.poppy.l_elbow_y.goto_position(90, 1.5, wait=False),
-                        self.poppy.r_shoulder_x.goto_position(-90, 1.5, wait=False),
-                        self.poppy.r_shoulder_y.goto_position(-90, 1.5, wait=False),
-                        self.poppy.r_elbow_y.goto_position(90, 1.5, wait=False)] 
-        time.sleep(2)    
-        hands_close = [self.poppy.l_shoulder_x.goto_position(-10, 1.5, wait=False),
-                        self.poppy.l_shoulder_y.goto_position(-90, 1.5, wait=False),
-                        self.poppy.l_elbow_y.goto_position(90, 1.5, wait=False),
-                        self.poppy.r_shoulder_x.goto_position(10, 1.5, wait=False),
-                        self.poppy.r_shoulder_y.goto_position(-90, 1.5, wait=False),
-                        self.poppy.r_elbow_y.goto_position(90, 1.5, wait=False)]
-        time.sleep(2)
-        hands_open = [self.poppy.l_shoulder_x.goto_position(90, 1.5, wait=False),
-                        self.poppy.l_shoulder_y.goto_position(-90, 1.5, wait=False),
-                        self.poppy.l_elbow_y.goto_position(90, 1.5, wait=False),
-                        self.poppy.r_shoulder_x.goto_position(-90, 1.5, wait=False),
-                        self.poppy.r_shoulder_y.goto_position(-90, 1.5, wait=False),
-                        self.poppy.r_elbow_y.goto_position(90, 1.5, wait=False)]
-                        
-        if counter >= s.rep-1 or s.success_exercise:  # TODO - Change to something that works if it finished before 8 repetitions.
-            self.poppy.l_shoulder_y.goto_position(0, 2, wait=False)
-            self.poppy.r_shoulder_y.goto_position(0, 2, wait=False)
-            self.poppy.l_shoulder_x.goto_position(0, 2, wait=False)
-            self.poppy.r_shoulder_x.goto_position(0, 2, wait=True)
-        if s.robot_count:
-            say(str(counter + 1))
-        time.sleep(1.8)  
-            
 
     # EX1 - Raise arms horizontally
     def raise_arms_horizontally(self, counter):

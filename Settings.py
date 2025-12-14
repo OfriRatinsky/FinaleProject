@@ -25,7 +25,8 @@ def __init__():
     global robot_rep # number of repetition of the robot
     global team
 
-    global have_voice #for audio failure
+    global have_voice #for audio
+    global Fake_speaker  ### change if it needed
 
     # audio variables
     global audio_path

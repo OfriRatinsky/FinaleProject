@@ -87,11 +87,44 @@ class Training(threading.Thread):
         s.screen.quit()
         print("TRAINING DONE")
 
+    # def run_exercise(self, name, hand=''):
+    #     s.success_exercise = False
+    #     print("TRAINING: Exercise ", name, " start")
+    #     say(name+hand)
+    #     # time.sleep(3)  # Delay the robot movement after the audio is played
+    #     s.req_exercise = name
+    #     while s.req_exercise == name:
+    #         time.sleep(0.001)  # Prevents the MP to stuck
+    #     if s.success_exercise:
+    #         say(self.random_encouragement())
+    #     print("TRAINING: Exercise ", name, " done")
+    #     time.sleep(1)
+
     def run_exercise(self, name, hand=''):
         s.success_exercise = False
         print("TRAINING: Exercise ", name, " start")
-        say(name+hand)
-        # time.sleep(3)  # Delay the robot movement after the audio is played
+        # if name=="impossible_EX": #אולי עם המצלמה
+        #     self.impossible_EX_func()
+        # if name=="impossible_EX_Adaptive":
+        #     self.impossible_EX_Adaptive_func()
+        if(name=="bend_elbows"): #לעשות למצלמה עוד אחד כזה
+            s.Have_voice=False
+            self.Time_to_check_voice(s.team)
+            if s.Have_voice==True:
+                 say(name+hand)
+                 time.sleep(3)  # Delay the robot movement after the audio is played
+            else :
+                screen.switch_frame()
+                time.sleep(2)
+                screen.What_To_wirte (name)  #לבדוק אם זה עובד
+            time.sleep(3)  # Delay the robot movement after the audio is played
+        elif(s.have_voice==True and name!="bend_elbows" and name !="impossible_EX" and name !="impossible_EX_Adaptive"):
+            say(name+hand)
+            time.sleep(3)  # Delay the robot movement after the audio is played
+        elif(s.have_voice!=True and name!="bend_elbows" and name !="impossible_EX" and name !="impossible_EX_Adaptive"):
+            s.switch_frame()
+            time.sleep(2)
+            screen.What_To_wirte(name) #לבדוק אם זה עובד
         s.req_exercise = name
         while s.req_exercise == name:
             time.sleep(0.001)  # Prevents the MP to stuck
@@ -100,9 +133,117 @@ class Training(threading.Thread):
         print("TRAINING: Exercise ", name, " done")
         time.sleep(1)
 
-    def random_encouragement(self):
-        enco = ["well done", "very good", "excellent"]
-        return random.choice(enco)
+
+    def Time_to_check_voice(self, team):
+        csv_path = r"D:\פרוייקט גמר\project_bullshit_on_its_way.xlsx"  # Update with the correct path #צריל להבין אם צריך
+        screen.switch_frame()
+        time.sleep(2)
+        screen.Alert()
+        time.sleep(15)
+        screen.switch_frame()
+        time.sleep(2)
+        # screen.How_HardWare()
+        # time.sleep(2)
+        #print("Waiting for 1 minute before issuing 'what_inter'")
+        if s.team == 1 or s.team == 4 or s.team == 5 or s.team == 8: #adaptive explanation team
+            self.Time_to_check_voice_adaptive()
+
+        elif s.team == 2 or s.team == 3: #without explanation teams
+            self.Time_to_check_voice_without_explanation()
+
+        elif s.team == 6 or s.team == 7:  # fully explanation teams
+            self.Time_to_check_voice_full_explanation()
+
+        return
+
+    def Time_to_check_voice_adaptive(self):
+        screen.What_HardWare()
+        time.sleep(2)
+        for _ in range(40):  # Wait for 40 sec in 1-second intervals #נשמע שזה 80 שניות
+            s.Fake_speaker = s.is_speaker_Active(s.Fake_speaker)
+            time.sleep(2)
+            if s.Fake_speaker:  # Continuously check for port output
+                say('Fix_Hardware_Good')
+                print("what Finished hardware problem")
+                s.have_voice = True
+                return
+        screen.switch_frame()
+        time.sleep(2)
+        screen.Why_Hardware()
+        for _ in range(40):  # Wait for 40 sec in 1-second intervals
+            s.Fake_speaker = s.is_speaker_Active(s.Fake_speaker)
+            time.sleep(2)
+            if s.Fake_speaker:  # Continuously check for port output
+                say('Fix_Hardware_Good')
+                print("why Finished hardware problem")
+                s.have_voice = True
+                return
+        screen.switch_frame()
+        time.sleep(2)
+        screen.How_Hardware()
+        for _ in range(40):  # Wait for 40 sec in 1-second intervals
+            s.Fake_speaker = s.is_speaker_Active(s.Fake_speaker)
+            time.sleep(2)
+            if s.Fake_speaker:  # Continuously check for port output
+                say('Fix_Hardware_Good')
+                print("how Finished hardware problem")
+                s.have_voice = True
+                return
+        screen.switch_frame()
+        time.sleep(2)
+        screen.Continue()
+        return
+
+    def Time_to_check_voice_full_explanation(self):
+        screen.What_HardWare()
+        time.sleep(2)
+        for _ in range(10):  # Wait for 20 sec in 1-second intervals
+            s.Fake_speaker = s.is_speaker_Active(s.Fake_speaker)
+            time.sleep(2)
+            if s.Fake_speaker:  # Continuously check for port output
+                say('Fix_Hardware_Good')
+                print("what Finished hardware problem")
+                s.have_voice = True
+        screen.switch_frame()
+        time.sleep(2)
+        screen.Why_Hardware()
+        for _ in range(10):  # Wait for 40 sec in 1-second intervals
+            s.Fake_speaker = s.is_speaker_Active(s.Fake_speaker)
+            time.sleep(2)
+            if s.Fake_speaker:  # Continuously check for port output
+                say('Fix_Hardware_Good')
+                print("why Finished hardware problem")
+                s.have_voice = True
+        screen.switch_frame()
+        time.sleep(2)
+        screen.How_Hardware()
+        for _ in range(10):  # Wait for 40 sec in 1-second intervals
+            s.Fake_speaker = s.is_speaker_Active(s.Fake_speaker)
+            time.sleep(2)
+            if s.Fake_speaker:  # Continuously check for port output
+                say('Fix_Hardware_Good')
+                print("how Finished hardware problem")
+                s.have_voice = True
+        screen.switch_frame()
+        time.sleep(2)
+        screen.Continue()
+        return
+
+    def Time_to_check_voice_without_explanation(self):
+        for _ in range(120):  # Wait for 120 sec in 1-second intervals
+            s.Fake_speaker = s.is_speaker_Active(s.Fake_speaker)
+            time.sleep(2)
+            if s.Fake_speaker:  # Continuously check for port output
+                say('Fix_Hardware_Good')
+                print("Finished hardware problem")
+                s.have_voice = True
+                return
+        screen.switch_frame()
+        time.sleep(2)
+        screen.Continue()
+        return
+
+
 
 
 if __name__ == "__main__":
