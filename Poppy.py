@@ -213,7 +213,7 @@ class Poppy(threading.Thread):
                 self.poppy.r_shoulder_x.goto_position(0, 2, wait=True)
 
     # EX5 - open and close arms 90
-    def open_and_close_arms_90(self, counter):
+    def open_and_close_arms_90(self, counter):#######################################################
         if counter == 0:
             self.poppy.l_shoulder_y.goto_position(-90, 1.5, wait=False)
             self.poppy.r_shoulder_y.goto_position(-90, 1.5, wait=True)
@@ -316,11 +316,18 @@ if __name__ == "__main__":
     language = 'Hebrew'
     gender = 'Male'
     s.audio_path = 'audio files/' + language + '/' + gender + '/'
+    #s.have_voice = True
 
     robot = Poppy()
 
-    # robot.exercise_demo("open_and_close_arms_90")
+  
+    robot.exercise_demo("raise_arms_horizontally")
+    robot.exercise_demo("raise_arms_forward")
+    robot.exercise_demo("raise_arms_bend_elbows")
+    robot.exercise_demo("open_and_close_arms_90")
+    robot.exercise_demo("bend_elbows")
     robot.exercise_demo("open_and_close_arms")
+
     # robot.start()
     time.sleep(10)
 

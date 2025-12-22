@@ -11,7 +11,7 @@ import pickle
 import datetime
 
 
-def print_hi(name):
+def print_hi(name):#
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
 # TODO add more exercises
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     s.training_done = False
     s.poppy_done = False
     s.camera_done = False
-    s.robot_count = True
+    s.robot_count = False #true- robot count, false- by user
     s.try_again = False
     s.team = 1 #הוספתי
     s.have_voice = True #הוספתי

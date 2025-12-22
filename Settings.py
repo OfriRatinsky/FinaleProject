@@ -28,6 +28,8 @@ def __init__():
     global have_voice #for audio
     global Fake_speaker  ### change if it needed
 
+    global Fake_camera #for camera inter 
+
     # audio variables
     global audio_path
 
