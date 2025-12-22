@@ -1,6 +1,7 @@
 import threading
 from poppy_torso import PoppyTorso
 import time
+from Screen import eight, five, four, one, seven, six, three, two
 import Settings as s
 from Audio import say
 
@@ -15,6 +16,8 @@ class Poppy(threading.Thread):
         for m in self.poppy.motors:  # motors need to be initialized, False=stiff, True=loose
             m.compliant = False
         self.init_robot()
+        self.counter_say = 0 
+
 
     def init_robot(self):
         for m in self.poppy.motors:
@@ -44,12 +47,24 @@ class Poppy(threading.Thread):
         if ex == "hello_waving":
             self.hello_waving()
         else:
+            self.counter_say = 0
             for i in range(s.rep):
                 s.robot_rep = i
                 getattr(self, ex)(i)
                 if s.success_exercise:
                     break
 
+    def what_to_say(self,number):
+        counter_to_write = {
+        "1": one,
+        "2": two,
+        "3": three,
+        "4": four,
+        "5": five,
+        "6": six,
+        "7": seven,
+        "8": eight,
+        }
 
     def hello_waving(self):
         self.poppy.r_shoulder_x.goto_position(-90, 1.5, wait=False)
@@ -77,10 +92,20 @@ class Poppy(threading.Thread):
                       self.poppy.l_elbow_y.goto_position(90, 1.5, wait=False),
                       self.poppy.r_shoulder_x.goto_position(0, 1.5, wait=False),
                       self.poppy.r_elbow_y.goto_position(90, 1.5, wait=False)]
-        if s.robot_count and s.have_voice==True:
-              say(str(counter + 1))
-        if s.robot_count and s.have_voice!=True:
-              s.screen.switch_frame(self.what_to_say(str(counter + 1)))
+        
+        if s.camera_not_recognize and (counter == 1 or counter == 3 or counter == 6):#inter failure part counter
+             self.counter_say += 1
+             if s.have_voice==True:
+                    say(str(self.counter_say))
+             else:
+                s.screen.switch_frame(self.what_to_say(str(self.counter_say)))
+
+        if s.camera_not_recognize != True:
+            self.counter_say += 1
+            if s.robot_count and s.have_voice==True:
+                say(str(self.counter_say))
+            if s.robot_count and s.have_voice!=True:
+                s.screen.switch_frame(self.what_to_say(str(self.counter_say)))
         time.sleep(1)
     
     # EX2 - Bend Elbows
@@ -280,11 +305,22 @@ class Poppy(threading.Thread):
         self.poppy.r_arm_z.goto_position(0, 1.5, wait=False)
         self.poppy.l_shoulder_y.goto_position(0, 1.5, wait=False)
         self.poppy.r_shoulder_y.goto_position(0, 1.5, wait=True)
-        if s.robot_count and s.have_voice==True:
-              say(str(counter + 1))
-        if s.robot_count and s.have_voice!=True:
-              s.screen.switch_frame(self.what_to_say(str(counter + 1)))
+
+        if s.robot_count and s.camera_not_recognize == True and counter in (0, 2, 5):#inter failure part counter
+             self.counter_say += 1
+             if s.have_voice==True:
+                    say(str(self.counter_say))
+             else:
+                s.screen.switch_frame(self.what_to_say(str(self.counter_say)))
+
+        if s.camera_not_recognize != True:
+            self.counter_say += 1
+            if s.robot_count and s.have_voice==True:
+                say(str(self.counter_say))
+            if s.robot_count and s.have_voice!=True:
+                s.screen.switch_frame(self.what_to_say(str(self.counter_say)))
         time.sleep(1)
+    
 
     # EX 6 raise_arms_forward - one hand
     def raise_arms_forward_one_hand(self, counter):

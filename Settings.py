@@ -29,6 +29,7 @@ def __init__():
     global Fake_speaker  ### change if it needed
 
     global Fake_camera #for camera inter 
+    global camera_not_recognize #for counter when camera not recognize 
 
     # audio variables
     global audio_path
