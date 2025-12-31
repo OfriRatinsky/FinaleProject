@@ -7,6 +7,7 @@ from Audio import say
 import Screen as screen #הוספתי
 import Camera as cam #הוספתי
 import os #הוספתי
+import msvcrt #עבור תקלת מצלמה- בדיקה שלחצנו על מקש רווח
 
 
 class Training(threading.Thread):
@@ -249,22 +250,25 @@ class Training(threading.Thread):
     
 
     def Time_to_check_camera(self, team):
-        csv_path = r"C:\Users\Admin\Desktop\רמקולקול\חיבורמקול.docx"  # Update with the correct path #צריל להבין אם צריך
+        #מאפס את הלחיצות על כפתורים- אמור לעזור כביכול
+        while msvcrt.kbhit():
+            msvcrt.getch()
+        #csv_path = r"C:\Users\Admin\Desktop\רמקולקול\חיבורמקול.docx"  # Update with the correct path #צריל להבין אם צריך
         # Start with the Alert frame
         s.screen.switch_frame(screen.Alert)
         time.sleep(15)
         if s.team == 2 or s.team == 3 or s.team == 6 or s.team == 7: #adaptive explanation team
-            self.Time_to_check_camera_adaptive(csv_path)
+            self.Time_to_check_camera_adaptive()
 
         elif s.team == 1 or s.team == 4: #without explanation teams
-            self.Time_to_check_camera_without_explanation(csv_path)
+            self.Time_to_check_camera_without_explanation()
 
         elif s.team == 5 or s.team == 8:  # fully explanation teams
-            self.Time_to_check_camera_full_explanation(csv_path)
+            self.Time_to_check_camera_full_explanation()
 
         return
 
-    def Time_to_check_camera_adaptive(self, csv_path):
+    def Time_to_check_camera_adaptive(self):
         inter_stages = [
             (screen.What_inter, "what Finished inter problem"),
             (screen.Why_inter, "why Finished inter problem"),
@@ -278,7 +282,7 @@ class Training(threading.Thread):
             time.sleep(2)
             
             for _ in range(40):  # Check for 40 seconds in 1-second intervals
-                s.Fake_camera = self.is_camera_Active(csv_path)
+                self.is_camera_Active()
                 time.sleep(1)
                 
                 if s.Fake_camera:  # If camera is active
@@ -309,7 +313,7 @@ class Training(threading.Thread):
             time.sleep(2)
             
             for _ in range(15):  # Check for 15 seconds in 1-second intervals
-                s.Fake_camera = self.is_camera_Active(csv_path)
+                self.is_camera_Active()
                 time.sleep(1)
                 
                 if s.Fake_camera:  # If speaker is active
@@ -327,9 +331,9 @@ class Training(threading.Thread):
             time.sleep(2)
         
 
-    def Time_to_check_camera_without_explanation(self, csv_path):
+    def Time_to_check_camera_without_explanation(self):
         for _ in range(120):  # Wait for 120 sec in 1-second intervals
-            s.Fake_camera = self.is_camera_Active(csv_path)
+            self.is_camera_Active()
             time.sleep(2)
             if s.Fake_camera:  # Continuously check for port output
                 if s.have_voice == True:
@@ -348,22 +352,12 @@ class Training(threading.Thread):
         print("Finished hardware check, no solution found")
         time.sleep(2)
         return
-    
-    def is_camera_Active(self, path):
-        try:
-        # Check if the file exists
-         if os.path.exists(path):
-            #pd.read_excel(path)  # Attempt to import the file
-            print("File imported successfully!")
-            s.screen.switch_frame(screen.EyesPage)
-            return True
-         else:
-            print(f"File does not exist at: {path}")
-            return False
-        except Exception as e:
-         print(f"Error while trying to import the file: {e}")
-         s.screen.switch_frame(screen.EyesPage)
-        return True      
+
+    def is_camera_Active(self):
+        if msvcrt.kbhit():
+            key = msvcrt.getch()
+            if key == b' ':  # SPACE
+                s.Fake_camera = True
 
 
 

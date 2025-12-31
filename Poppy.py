@@ -10,8 +10,8 @@ class Poppy(threading.Thread):
 
     def __init__(self):
         threading.Thread.__init__(self)
-        #self.poppy = PoppyTorso()  # for real robot
-        self.poppy = PoppyTorso(simulator='vrep')  # for simulator
+        self.poppy = PoppyTorso(camera = "dummy")  # for real robot
+        #self.poppy = PoppyTorso(simulator='vrep')  # for simulator
         print("ROBOT INITIALIZATION")
         for m in self.poppy.motors:  # motors need to be initialized, False=stiff, True=loose
             m.compliant = False
@@ -26,6 +26,7 @@ class Poppy(threading.Thread):
         self.poppy.head_y.goto_position(-20, 1, wait=True)
         self.poppy.r_elbow_y.goto_position(90, 1, wait=True)
         self.poppy.l_elbow_y.goto_position(90, 1, wait=True)
+
 
     def run(self):
         print("ROBOT START")
@@ -355,17 +356,6 @@ if __name__ == "__main__":
     #s.have_voice = True
 
     robot = Poppy()
-
-  
-    robot.exercise_demo("raise_arms_horizontally")
-    robot.exercise_demo("raise_arms_forward")
-    robot.exercise_demo("raise_arms_bend_elbows")
-    robot.exercise_demo("open_and_close_arms_90")
-    robot.exercise_demo("bend_elbows")
-    robot.exercise_demo("open_and_close_arms")
-
-    # robot.start()
-    time.sleep(10)
 
     # robot.poppy.l_shoulder_y.goto_position(-90, 1.5, wait=False)
     # robot.poppy.r_shoulder_y.goto_position(-90, 1.5, wait=True)
