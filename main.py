@@ -11,6 +11,7 @@ import pickle
 import datetime
 
 
+
 def print_hi(name):#
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
@@ -44,10 +45,13 @@ if __name__ == '__main__':
     s.training_done = False
     s.poppy_done = False
     s.camera_done = False
-    s.robot_count = True #true- robot count, false- by user
+    s.robot_count = False #true- robot count, false- by user
     s.try_again = False
-    s.team = 1 #הוספתי
+    s.team = 1#הוספתי
     s.have_voice = True #הוספתי
+    s.Fake_camera = False
+    s.camera_not_recognize = False
+
     # Excel variable
     Excel.create_workbook()
     s.ex_list = []

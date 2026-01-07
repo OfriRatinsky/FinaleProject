@@ -15,7 +15,7 @@ import Settings as s
 import Excel
 from Audio import say
 from performance_classification import feature_extraction, predict_performance, plot_data
-
+from Screen import eight, five, four, one, seven, six, three, two
 
 class Camera(threading.Thread):
 
@@ -111,6 +111,7 @@ class Camera(threading.Thread):
                                joint4, joint5, joint6, up_lb2, up_ub2, down_lb2, down_ub2, angle_classification, use_alternate_angles=False):
         flag = True
         counter = 0
+        counter_say = 0
         said_instructions = False
         list_joints = []
         while s.req_exercise == exercise_name:
@@ -158,8 +159,34 @@ class Camera(threading.Thread):
                         flag = True
                         counter += 1
                         print(counter)
-                        if not s.robot_count:
-                            say(str(counter))
+                        #if not s.robot_count:
+                            #say(str(counter))
+                        if not s.robot_count and s.camera_not_recognize == True and counter in (
+                        1, 3, 6):  # inter failure part counter
+                            counter_say += 1
+                            if s.have_voice == True:
+                                say(str(counter_say))
+                            else:
+                                screen_before = type(s.screen._frame)  # לבדוק איך תופסים את המסך של עכשיו
+                                s.screen.switch_frame(self.what_to_say(str(counter_say)))
+                                time.sleep(0.5)  # לוודא שמספיק
+                                s.screen.switch_frame(screen_before)
+
+                        if not s.robot_count and s.camera_not_recognize != True:
+                            counter_say += 1
+                            if s.have_voice == True:
+                                say(str(counter_say))
+                            if s.have_voice != True:
+                                screen_before = type(s.screen._frame)  # לבדוק איך תופסים את המסך של עכשיו
+                                s.screen.switch_frame(self.what_to_say(str(counter_say)))
+                                time.sleep(0.5)  # לוודא שמספיק
+                                s.screen.switch_frame(screen_before)
+                        time.sleep(1)
+
+
+
+
+
                     if (down_lb < right_angle < down_ub) & (down_lb < left_angle < down_ub) & \
                             (down_lb2 < right_angle2 < down_ub2) & (down_lb2 < left_angle2 < down_ub2) & (flag):
                         flag = False
@@ -193,6 +220,7 @@ class Camera(threading.Thread):
                               use_alternate_angles=False):
         flag = True
         counter = 0
+        counter_say = 0
         said_instructions = False
         list_joints = []
         while s.req_exercise == exercise_name:
@@ -218,8 +246,30 @@ class Camera(threading.Thread):
                         flag = True
                         counter += 1
                         print(counter)
-                        if not s.robot_count:
-                            say(str(counter))
+                        #if not s.robot_count:
+                            #say(str(counter))
+                        if not s.robot_count and s.camera_not_recognize == True and counter in (
+                        1, 3, 6):  # inter failure part counter
+                            counter_say += 1
+                            if s.have_voice == True:
+                                say(str(counter_say))
+                            else:
+                                screen_before = type(s.screen._frame)  # לבדוק איך תופסים את המסך של עכשיו
+                                s.screen.switch_frame(self.what_to_say(str(counter_say)))
+                                time.sleep(0.5)  # לוודא שמספיק
+                                s.screen.switch_frame(screen_before)
+
+                        if not s.robot_count and s.camera_not_recognize != True:
+                            counter_say += 1
+                            if s.have_voice == True:
+                                say(str(counter_say))
+                            if s.have_voice != True:
+                                screen_before = type(s.screen._frame)  # לבדוק איך תופסים את המסך של עכשיו
+                                s.screen.switch_frame(self.what_to_say(str(counter_say)))
+                                time.sleep(0.5)  # לוודא שמספיק
+                                s.screen.switch_frame(screen_before)
+                        time.sleep(1)
+
                     if (down_lb < right_angle < down_ub) & (down_lb < left_angle < down_ub) & (flag):
                         flag = False
             if (not s.robot_count) and (counter == s.rep):
@@ -355,6 +405,20 @@ class Camera(threading.Thread):
             plot_data(exercise_name, right_hand_data, left_hand_data)  # only for internal checks comparing plot to classification
         else:
             s.performance_class[exercise_name] = {'right': 1, 'left': 1}  # the exercise was not performed enough times
+
+    def what_to_say(self,number):
+        counter_to_write = {
+        "1": one,
+        "2": two,
+        "3": three,
+        "4": four,
+        "5": five,
+        "6": six,
+        "7": seven,
+        "8": eight,
+        }
+        return counter_to_write.get(number, None)
+
 
     def run(self):
         print("CAMERA START")

@@ -8,6 +8,7 @@ import Screen as screen #הוספתי
 import Camera as cam #הוספתי
 import os #הוספתי
 import msvcrt #עבור תקלת מצלמה- בדיקה שלחצנו על מקש רווח
+import pygame
 
 
 class Training(threading.Thread):
@@ -32,33 +33,50 @@ class Training(threading.Thread):
         say('lets start')
         time.sleep(2.5)
         print("Training: finish waving")
+        self.warm_up()
+        time.sleep(8)# להוסיף say של תחילת אימון
+        print("Training: finish warmup")
         s.poppy_done = False  # AFTER HELLO
         s.camera_done = False  # AFTER HELLO
         self.start_training()
         self.finish_workout()
 
+    def warm_up(self):
+        say('start_warm_up')
+        print("Training: start exercises")
+        # TODO - adding random choice of exercises.
+        exercise_names = ["open_and_close_arms_90","open_and_close_arms"]
+        for e in exercise_names:
+            time.sleep(1) # wait between exercises
+            self.run_exercise(e)
+            while (not s.poppy_done) or (not s.camera_done):
+                print("not done")
+                time.sleep(1)
+        say('end_warm_up')
+        time.sleep(1)
 
     #group 1 להחליף שמות לפונקציות
     def start_training(self):# כל פעם שולח לתרגילים ככה שבתרגיל השני והחמישי יהיו תקלות מתחלפות
         print("Training: start exercises")
         if s.team == 1:
-            exercise_names = ["raise_arms_forward"] 
+            exercise_names = ["raise_arms_horizontally","break"]#, "raise_arms_forward","open_and_close_arms_90"]
 
-           #exercise_names = ["raise_arms_horizontally","bend_elbows",  "raise_arms_bend_elbows","open_and_close_arms_90","raise_arms_forward",  "open_and_close_arms" ]
+           #exercise_names = ["raise_arms_horizontally","bend_elbows",  "raise_arms_bend_elbows","break","open_and_close_arms_90","raise_arms_forward",  "open_and_close_arms" ]
         if s.team == 2:
-            exercise_names = ["raise_arms_horizontally", "raise_arms_forward", "raise_arms_bend_elbows", "open_and_close_arms_90","bend_elbows", "open_and_close_arms"]
+            exercise_names = ["raise_arms_forward"]
+            #exercise_names = ["raise_arms_horizontally", "raise_arms_forward", "raise_arms_bend_elbows","break", "open_and_close_arms_90","bend_elbows", "open_and_close_arms"]
         if s.team == 3:
-            exercise_names = ["raise_arms_horizontally", "bend_elbows", "raise_arms_bend_elbows", "open_and_close_arms_90","raise_arms_forward", "open_and_close_arms"]
+            exercise_names = ["raise_arms_horizontally", "bend_elbows", "raise_arms_bend_elbows","break", "open_and_close_arms_90","raise_arms_forward", "open_and_close_arms"]
         if s.team == 4:
-            exercise_names = ["raise_arms_horizontally", "raise_arms_forward", "raise_arms_bend_elbows", "open_and_close_arms_90", "bend_elbows", "open_and_close_arms"]
+            exercise_names = ["raise_arms_horizontally", "raise_arms_forward", "raise_arms_bend_elbows","break", "open_and_close_arms_90", "bend_elbows", "open_and_close_arms"]
         if s.team == 5:
-            exercise_names = ["raise_arms_horizontally", "bend_elbows", "raise_arms_bend_elbows", "open_and_close_arms_90", "raise_arms_forward", "open_and_close_arms"]
+            exercise_names = ["raise_arms_horizontally", "bend_elbows", "raise_arms_bend_elbows","break", "open_and_close_arms_90", "raise_arms_forward", "open_and_close_arms"]
         if s.team == 6:
-            exercise_names = ["raise_arms_horizontally", "raise_arms_forward", "raise_arms_bend_elbows", "open_and_close_arms_90", "bend_elbows", "open_and_close_arms"]
+            exercise_names = ["raise_arms_horizontally", "raise_arms_forward", "raise_arms_bend_elbows","break", "open_and_close_arms_90", "bend_elbows", "open_and_close_arms"]
         if s.team == 7:
-            exercise_names = ["raise_arms_horizontally", "bend_elbows", "raise_arms_bend_elbows", "open_and_close_arms_90","raise_arms_forward", "open_and_close_arms"]
+            exercise_names = ["raise_arms_horizontally", "bend_elbows", "raise_arms_bend_elbows","break", "open_and_close_arms_90","raise_arms_forward", "open_and_close_arms"]
         if s.team == 8:
-            exercise_names = ["raise_arms_horizontally", "raise_arms_forward", "raise_arms_bend_elbows", "open_and_close_arms_90", "bend_elbows", "open_and_close_arms"]
+            exercise_names = ["raise_arms_horizontally", "raise_arms_forward", "raise_arms_bend_elbows","break", "open_and_close_arms_90", "bend_elbows", "open_and_close_arms"]
 
         for e in exercise_names:
             time.sleep(2) # wait between exercises
@@ -84,6 +102,7 @@ class Training(threading.Thread):
     def finish_workout(self):
         say('goodbye')
         s.finish_workout = True
+        s.robot.loose_motors()
         Excel.success_worksheet()
         Excel.close_workbook()
         time.sleep(10)
@@ -116,6 +135,9 @@ class Training(threading.Thread):
     def run_exercise(self, name, hand=''):
         s.success_exercise = False
         print("TRAINING: Exercise ", name, " start")
+        if(name == "break"): #Questionnaire completion
+            input("Press Enter to continue...")
+            return
         if(name== "raise_arms_forward"):
             s.camera_not_recognize = True
             if s.have_voice==True:
@@ -126,17 +148,17 @@ class Training(threading.Thread):
             s.req_exercise = name
             self.Time_to_check_camera(s.team)
         if(name=="bend_elbows"): #לעשות למצלמה עוד אחד כזה
-            s.Have_voice=False
+            s.have_voice=False
             s.screen.switch_frame(screen.bend_elbows)
             time.sleep(1)
             s.req_exercise = name
             self.Time_to_check_voice(s.team)
             
-        elif(s.have_voice==True and name!="bend_elbows"):
+        elif(s.have_voice==True and name!="bend_elbows" and name !="raise_arms_forward"):
             say(name+hand)
             time.sleep(3)  # Delay the robot movement after the audio is played
             s.req_exercise = name
-        elif(s.have_voice!=True and name!="bend_elbows"):
+        elif(s.have_voice!=True and name!="bend_elbows" and name !="raise_arms_forward"):
             self.What_To_write(name) #לבדוק אם זה עובד
             time.sleep(2)
             s.req_exercise = name
@@ -148,17 +170,20 @@ class Training(threading.Thread):
 
 
     def Time_to_check_voice(self, team):
-        csv_path = r"C:\Users\Admin\Desktop\רמקולקול\חיבורמקול.docx"  # Update with the correct path #צריל להבין אם צריך
+        csv_path = r"C:\Users\owner\Desktop\רמקולקול\חיבורמקול.docx"  # Update with the correct path #צריל להבין אם צריך
         # Start with the Alert frame
-        s.screen.switch_frame(screen.Alert)
-        time.sleep(15)
+        time.sleep(3)
         if s.team == 1 or s.team == 4 or s.team == 5 or s.team == 8: #adaptive explanation team
+            s.screen.switch_frame(screen.Alert)
+            time.sleep(1)
             self.Time_to_check_voice_adaptive(csv_path)
 
         elif s.team == 2 or s.team == 3: #without explanation teams
             self.Time_to_check_voice_without_explanation(csv_path)
 
         elif s.team == 6 or s.team == 7:  # fully explanation teams
+            s.screen.switch_frame(screen.Alert)
+            time.sleep(1)
             self.Time_to_check_voice_full_explanation(csv_path)
 
         return
@@ -221,7 +246,7 @@ class Training(threading.Thread):
     def Time_to_check_voice_without_explanation(self, csv_path):
         for _ in range(120):  # Wait for 120 sec in 1-second intervals
             s.Fake_speaker = self.is_speaker_Active(csv_path)
-            time.sleep(2)
+            time.sleep(1)
             if s.Fake_speaker:  # Continuously check for port output
                 say('Fix_Hardware_Good')
                 print("Finished hardware problem")
@@ -250,35 +275,39 @@ class Training(threading.Thread):
     
 
     def Time_to_check_camera(self, team):
-        #מאפס את הלחיצות על כפתורים- אמור לעזור כביכול
-        while msvcrt.kbhit():
-            msvcrt.getch()
+        pygame.init()
+        pygame.display.set_mode((1, 1))
+
         #csv_path = r"C:\Users\Admin\Desktop\רמקולקול\חיבורמקול.docx"  # Update with the correct path #צריל להבין אם צריך
         # Start with the Alert frame
-        s.screen.switch_frame(screen.Alert)
-        time.sleep(15)
+        #s.screen.switch_frame(screen.Alert)
+        time.sleep(3) #15
         if s.team == 2 or s.team == 3 or s.team == 6 or s.team == 7: #adaptive explanation team
+            s.screen.switch_frame(screen.Alert)
+            time.sleep(1)
             self.Time_to_check_camera_adaptive()
 
         elif s.team == 1 or s.team == 4: #without explanation teams
             self.Time_to_check_camera_without_explanation()
 
         elif s.team == 5 or s.team == 8:  # fully explanation teams
+            s.screen.switch_frame(screen.Alert)
+            time.sleep(1)
             self.Time_to_check_camera_full_explanation()
 
         return
 
     def Time_to_check_camera_adaptive(self):
         inter_stages = [
-            (screen.What_inter, "what Finished inter problem"),
-            (screen.Why_inter, "why Finished inter problem"),
+            (screen.What_inter,"What_inter"),# "what Finished inter problem"),
+            (screen.Why_inter,"Why_inter"),# "why Finished inter problem"),
             (screen.How_inter, "how Finished inter problem"),
-            (screen.Continue, "Finished inter check, no solution found"),
+            (screen.continue_inter, "Finished inter check, no solution found"),
         ]
         for frame, message in inter_stages[:-1]:  # Exclude the "Continue" stage for now
             s.screen.switch_frame(frame)
             if s.have_voice==True:
-                say(message)
+                say(frame.__name__)#פה שניתי!!!
             time.sleep(2)
             
             for _ in range(40):  # Check for 40 seconds in 1-second intervals
@@ -288,7 +317,7 @@ class Training(threading.Thread):
                 if s.Fake_camera:  # If camera is active
                     s.camera_not_recognize = False
                     print(message)
-                    say("Fix_inter_Good")
+                    say("Fix_Hardware_Good")#לשנות לFix_inter_Good
                     s.screen.switch_frame(screen.EyesPage)
                     return 
                 
@@ -334,13 +363,13 @@ class Training(threading.Thread):
     def Time_to_check_camera_without_explanation(self):
         for _ in range(120):  # Wait for 120 sec in 1-second intervals
             self.is_camera_Active()
-            time.sleep(2)
+            time.sleep(1)
             if s.Fake_camera:  # Continuously check for port output
                 if s.have_voice == True:
                     say('Fix_inter_Good')
                     s.screen.switch_frame(screen.EyesPage)
                 else:
-                    s.screen.switch_frame(screen.fix_inter_good) 
+                    s.screen.switch_frame(screen.fix_inter_good)
                 print("Finished inter problem")
                 s.camera_not_recognize = False
                 return
@@ -348,16 +377,36 @@ class Training(threading.Thread):
         if s.have_voice == True:
             say("continue_inter")
         else:
-            s.screen.switch_frame(screen.Continue_inter)
+            s.screen.switch_frame(screen.continue_inter)
         print("Finished hardware check, no solution found")
         time.sleep(2)
         return
 
+    # def is_camera_Active(self):
+    #     if msvcrt.kbhit():
+    #         key = msvcrt.getch()
+    #         if key == b' ':  # SPACE
+    #             s.Fake_camera = True
+
+    # def is_camera_Active(self):
+    #     for event in pygame.event.get():
+    #         if event.type == pygame.KEYDOWN:
+    #             if event.key == pygame.K_SPACE:
+    #                 s.Fake_camera = True
+
     def is_camera_Active(self):
-        if msvcrt.kbhit():
-            key = msvcrt.getch()
-            if key == b' ':  # SPACE
+        path = r"C:\Users\owner\Desktop\רמקולקול\חיבורמצלמה.rtf"  # Update with the correct path #צריל להבין אם צריך
+        try:
+            # Check if the file exists
+            if os.path.exists(path):
                 s.Fake_camera = True
+                return True
+            else:
+                print(f"File does not exist at: {path}")
+                return False
+        except Exception as e:
+            print(f"Error while trying to import the file: {e}")
+        return True
 
 
 

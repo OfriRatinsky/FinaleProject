@@ -13,6 +13,7 @@ class Screen(tk.Tk):
         self._frame = None
         self.switch_frame(EyesPage)
         self["bg"] = "#F3FCFB"
+        self.current_frame_name = None
 
     def switch_frame(self, frame_class):
         """Destroys current frame and replaces it with a new one."""
@@ -23,6 +24,7 @@ class Screen(tk.Tk):
             self._frame.destroy()
         self._frame = new_frame
         self._frame.pack()
+        self.current_frame_name = frame_class.__name__
 
 
 ##### need to make sure all paths are good##############
