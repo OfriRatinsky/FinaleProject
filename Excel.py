@@ -2,6 +2,7 @@ import xlsxwriter
 import datetime
 import Settings as s
 from Joint import Joint
+from openpyxl import load_workbook
 
 
 def create_workbook():
@@ -62,6 +63,17 @@ def success_worksheet():
     #         s.worksheet.write(row, col+2, "nan")
     #     row += 1
     #     col = 0
+def append_rows_to_excel(filepath, rows, sheet_name="times"):
+    wb = load_workbook(filepath)
+    ws = wb[sheet_name]
+
+    headers = [cell.value for cell in ws[1]]
+
+    for row in rows:
+        ws.append([row.get(h, "") for h in headers])
+
+    wb.save(filepath)
+
 
 def close_workbook():
     s.excel_workbook.close()

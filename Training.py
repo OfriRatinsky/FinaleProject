@@ -13,6 +13,7 @@ import os #הוספתי
 class Training(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
+        self.experiment_rows = []
 
     def run(self):
         print("TRAINING START")#
@@ -32,9 +33,9 @@ class Training(threading.Thread):
         say('lets start')
         time.sleep(2.5)
         print("Training: finish waving")
-        # self.warm_up()
-        # time.sleep(8)# להוסיף say של תחילת אימון
-        # print("Training: finish warmup")
+        self.warm_up()
+        time.sleep(8)
+        print("Training: finish warmup")
         s.poppy_done = False  # AFTER HELLO
         s.camera_done = False  # AFTER HELLO
         self.start_training()
@@ -58,7 +59,7 @@ class Training(threading.Thread):
     def start_training(self):# כל פעם שולח לתרגילים ככה שבתרגיל השני והחמישי יהיו תקלות מתחלפות
         print("Training: start exercises")
         if s.team == 1:
-            exercise_names = ["raise_arms_horizontally","break"]#, "raise_arms_forward","open_and_close_arms_90"]
+            exercise_names = ["bend_elbows"]#, "raise_arms_forward","open_and_close_arms_90"]
 
            #exercise_names = ["raise_arms_horizontally","bend_elbows",  "raise_arms_bend_elbows","break","open_and_close_arms_90","raise_arms_forward",  "open_and_close_arms" ]
         if s.team == 2:
@@ -104,6 +105,12 @@ class Training(threading.Thread):
         s.robot.loose_motors()
         Excel.success_worksheet()
         Excel.close_workbook()
+        print("ROWS TO SAVE =", len(self.experiment_rows))
+        if self.experiment_rows:
+            print("FIRST ROW =", self.experiment_rows[0])
+
+        excel_path = r"C:\Users\owner\Desktop\repair_time.xlsx"
+        Excel.append_rows_to_excel(excel_path, self.experiment_rows)
         time.sleep(10)
         s.screen.quit()
         print("TRAINING DONE")
@@ -171,7 +178,7 @@ class Training(threading.Thread):
 
 
     def Time_to_check_voice(self, team):
-        csv_path = r"C:\Users\owner\Desktop\רמקולקול\חיבורמקול.docx"  # Update with the correct path #צריל להבין אם צריך
+        csv_path = r"D:\חיבורמקול.docx"  # Update with the correct path #צריל להבין אם צריך
         # Start with the Alert frame
         time.sleep(3)
         if s.team == 1 or s.team == 4 or s.team == 5 or s.team == 8: #adaptive explanation team
@@ -214,6 +221,7 @@ class Training(threading.Thread):
                     end = time.perf_counter()
                     seconds = round(end - start)
                     print(seconds)
+                    self.log_repair("hardware", "adaptive", seconds, message.split()[0])
                     return
                 
         s.screen.switch_frame(hardware_stages[-1][0])  # "Continue" frame
@@ -245,6 +253,8 @@ class Training(threading.Thread):
                     end = time.perf_counter()
                     seconds = round(end - start)
                     print(seconds)
+                    self.log_repair("hardware", "full", seconds)
+                    return
 
         if s.have_voice!=True:
             s.screen.switch_frame(hardware_stages[-1][0])  # "Continue" frame
@@ -264,6 +274,7 @@ class Training(threading.Thread):
                 end = time.perf_counter()
                 seconds = round(end - start)
                 print(seconds)
+                self.log_repair("hardware", "without", seconds)
 
                 return
         s.screen.switch_frame(screen.Continue)
@@ -308,8 +319,8 @@ class Training(threading.Thread):
     def Time_to_check_camera_adaptive(self):
         start = time.perf_counter()
         inter_stages = [
-            (screen.What_inter,"What_inter"),# "what Finished inter problem"),
-            (screen.Why_inter,"Why_inter"),# "why Finished inter problem"),
+            (screen.What_inter,"what Finished inter problem"),
+            (screen.Why_inter,"why Finished inter problem"),
             (screen.How_inter, "how Finished inter problem"),
             (screen.continue_inter, "Finished inter check, no solution found"),
         ]
@@ -326,23 +337,24 @@ class Training(threading.Thread):
                 if s.Fake_camera:  # If camera is active
                     s.camera_not_recognize = False
                     print(message)
-                    say("Fix_Hardware_Good")#לשנות לFix_inter_Good
+                    say("Fix_inter_good")
                     s.screen.switch_frame(screen.EyesPage)
 
                     end = time.perf_counter()
                     seconds = round(end - start)
                     print(seconds)
+                    self.log_repair("interaction", "adaptive", seconds,message.split()[0])
 
                     return 
                 
         if s.have_voice == True:
             say("continue_inter")
         else:
-            s.screen.switch_frame(screen.Continue_inter)
+            s.screen.switch_frame(screen.continue_inter)
         print(inter_stages[-1][1])
         time.sleep(2)
 
-    def Time_to_check_camera_full_explanation(self, csv_path):
+    def Time_to_check_camera_full_explanation(self):
         start = time.perf_counter()
         inter_stages = [
             (screen.What_inter, "what Finished inter problem"),
@@ -353,7 +365,7 @@ class Training(threading.Thread):
         for frame, message in inter_stages[:-1]:  # Exclude the "Continue" stage for now
             s.screen.switch_frame(frame)
             if s.have_voice==True:
-                say(message)
+                say(frame.__name__)
             time.sleep(2)
             
             for _ in range(15):  # Check for 15 seconds in 1-second intervals
@@ -362,13 +374,14 @@ class Training(threading.Thread):
                 if s.Fake_camera:  # If speaker is active
                     s.camera_not_recognize = False
                     print(message)
-                    say("Fix_inter_Good")
+                    say("Fix_inter_good")
                     s.screen.switch_frame(screen.EyesPage)
 
                     end = time.perf_counter()
                     seconds = round(end - start)
                     print(seconds)
-
+                    self.log_repair("interaction", "full", seconds)
+                    return
         if s.camera_not_recognize == True:
             if s.have_voice == True:
                 say("continue_inter")
@@ -384,15 +397,17 @@ class Training(threading.Thread):
             time.sleep(1)
             if s.Fake_camera:  # Continuously check for port output
                 if s.have_voice == True:
-                    say('Fix_inter_Good')
+                    say('Fix_inter_good')
                     s.screen.switch_frame(screen.EyesPage)
                 else:
-                    s.screen.switch_frame(screen.fix_inter_good)
+                    s.screen.switch_frame(screen.Fix_inter_good)
                 print("Finished inter problem")
                 s.camera_not_recognize = False
                 end = time.perf_counter()
                 seconds = round(end - start)
                 print(seconds)
+                self.log_repair("interaction","without",seconds)
+
                 return
             
         if s.have_voice == True:
@@ -402,6 +417,17 @@ class Training(threading.Thread):
         print("Finished hardware check, no solution found")
         time.sleep(2)
         return
+
+    def log_repair(self, failure_type, feedback_type, repair_time_s, feedback_stage=""):
+        self.experiment_rows.append({
+            "Participant Number": s.participant_number,
+            "group number": s.team,
+            "hardware/inter": failure_type,  # "hardware" / "interaction"
+            "Feedback Type": feedback_type,
+            "Repair Time (s)": repair_time_s,
+            "Feedback Stage (if adaptive)": feedback_stage or ""
+        })
+
 
 
 if __name__ == "__main__":

@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
     # Training variables initialization
     s.exercise_amount = 6 #מתוקן לכמות שאנחנו עושות
-    s.rep = 8
+    s.rep = 7
     s.req_exercise = ""
     s.finish_workout = False
     s.waved = False
@@ -47,7 +47,8 @@ if __name__ == '__main__':
     s.camera_done = False
     s.robot_count = False #true- robot count, false- by user
     s.try_again = False
-    s.team = 2#הוספתי
+    s.participant_number = 1
+    s.team = 8#הוספתי
     s.have_voice = True #הוספתי
     s.Fake_camera = False
     s.camera_not_recognize = False

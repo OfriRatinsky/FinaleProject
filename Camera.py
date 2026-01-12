@@ -191,7 +191,7 @@ class Camera(threading.Thread):
                             (down_lb2 < right_angle2 < down_ub2) & (down_lb2 < left_angle2 < down_ub2) & (flag):
                         flag = False
             if (not s.robot_count) and (counter == s.rep):
-                s.req_exercise = ""
+                #s.req_exercise = ""
                 s.success_exercise = True
                 break
             if s.corrective_feedback and (s.robot_rep >= s.rep/2) and counter <=2 and not said_instructions:
@@ -273,7 +273,7 @@ class Camera(threading.Thread):
                     if (down_lb < right_angle < down_ub) & (down_lb < left_angle < down_ub) & (flag):
                         flag = False
             if (not s.robot_count) and (counter == s.rep):
-                s.req_exercise = ""
+                #s.req_exercise = ""
                 s.success_exercise = True
                 break
             if s.corrective_feedback and (s.robot_rep >= s.rep/2) and counter <=2 and not said_instructions:
