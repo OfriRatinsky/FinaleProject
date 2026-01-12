@@ -7,8 +7,7 @@ from Audio import say
 import Screen as screen #הוספתי
 import Camera as cam #הוספתי
 import os #הוספתי
-import msvcrt #עבור תקלת מצלמה- בדיקה שלחצנו על מקש רווח
-import pygame
+
 
 
 class Training(threading.Thread):
@@ -33,9 +32,9 @@ class Training(threading.Thread):
         say('lets start')
         time.sleep(2.5)
         print("Training: finish waving")
-        self.warm_up()
-        time.sleep(8)# להוסיף say של תחילת אימון
-        print("Training: finish warmup")
+        # self.warm_up()
+        # time.sleep(8)# להוסיף say של תחילת אימון
+        # print("Training: finish warmup")
         s.poppy_done = False  # AFTER HELLO
         s.camera_done = False  # AFTER HELLO
         self.start_training()
@@ -123,10 +122,12 @@ class Training(threading.Thread):
     #     time.sleep(1)
 
     def What_To_write (self,name):####לשנות תרגילים
+        if(name=='raise_arms_horizontally'):#######
+            s.screen.switch_frame(screen.raise_arms_horizontally)
+        if(name=='open_and_close_arms_90'):#########
+            s.screen.switch_frame(screen.open_and_close_arms_90)
         if(name=='raise_arms_bend_elbows'):
             s.screen.switch_frame(screen.raise_arms_bend_elbows)
-        if(name=='impossible_EX'):
-            s.screen.switch_frame(screen.impossible_EX)
         if(name=='open_and_close_arms'):
             s.screen.switch_frame(screen.open_and_close_arms)
         if(name=='raise_arms_forward'):
@@ -189,6 +190,7 @@ class Training(threading.Thread):
         return
 
     def Time_to_check_voice_adaptive(self, csv_path):
+        start = time.perf_counter()
         hardware_stages = [
             (screen.What_Hardware, "what Finished hardware problem"),
             (screen.Why_Hardware, "why Finished hardware problem"),
@@ -209,13 +211,17 @@ class Training(threading.Thread):
                     print(message)
                     say("Fix_Hardware_Good")
                     s.screen.switch_frame(screen.EyesPage)
-                    return 
+                    end = time.perf_counter()
+                    seconds = round(end - start)
+                    print(seconds)
+                    return
                 
         s.screen.switch_frame(hardware_stages[-1][0])  # "Continue" frame
         print(hardware_stages[-1][1])
         time.sleep(2)
 
     def Time_to_check_voice_full_explanation(self, csv_path):
+        start = time.perf_counter()
         hardware_stages = [
             (screen.What_Hardware, "what Finished hardware problem"),
             (screen.Why_Hardware, "why Finished hardware problem"),
@@ -236,14 +242,18 @@ class Training(threading.Thread):
                     print(message)
                     say("Fix_Hardware_Good")
                     s.screen.switch_frame(screen.EyesPage)
+                    end = time.perf_counter()
+                    seconds = round(end - start)
+                    print(seconds)
 
-        if s.have_voice!=True:          
+        if s.have_voice!=True:
             s.screen.switch_frame(hardware_stages[-1][0])  # "Continue" frame
             print(hardware_stages[-1][1])
             time.sleep(2)
         
 
     def Time_to_check_voice_without_explanation(self, csv_path):
+        start = time.perf_counter()
         for _ in range(120):  # Wait for 120 sec in 1-second intervals
             s.Fake_speaker = self.is_speaker_Active(csv_path)
             time.sleep(1)
@@ -251,6 +261,10 @@ class Training(threading.Thread):
                 say('Fix_Hardware_Good')
                 print("Finished hardware problem")
                 s.have_voice = True
+                end = time.perf_counter()
+                seconds = round(end - start)
+                print(seconds)
+
                 return
         s.screen.switch_frame(screen.Continue)
         print("Finished hardware check, no solution found")
@@ -275,12 +289,6 @@ class Training(threading.Thread):
     
 
     def Time_to_check_camera(self, team):
-        pygame.init()
-        pygame.display.set_mode((1, 1))
-
-        #csv_path = r"C:\Users\Admin\Desktop\רמקולקול\חיבורמקול.docx"  # Update with the correct path #צריל להבין אם צריך
-        # Start with the Alert frame
-        #s.screen.switch_frame(screen.Alert)
         time.sleep(3) #15
         if s.team == 2 or s.team == 3 or s.team == 6 or s.team == 7: #adaptive explanation team
             s.screen.switch_frame(screen.Alert)
@@ -298,6 +306,7 @@ class Training(threading.Thread):
         return
 
     def Time_to_check_camera_adaptive(self):
+        start = time.perf_counter()
         inter_stages = [
             (screen.What_inter,"What_inter"),# "what Finished inter problem"),
             (screen.Why_inter,"Why_inter"),# "why Finished inter problem"),
@@ -311,7 +320,7 @@ class Training(threading.Thread):
             time.sleep(2)
             
             for _ in range(40):  # Check for 40 seconds in 1-second intervals
-                self.is_camera_Active()
+                #self.is_camera_Active()
                 time.sleep(1)
                 
                 if s.Fake_camera:  # If camera is active
@@ -319,6 +328,11 @@ class Training(threading.Thread):
                     print(message)
                     say("Fix_Hardware_Good")#לשנות לFix_inter_Good
                     s.screen.switch_frame(screen.EyesPage)
+
+                    end = time.perf_counter()
+                    seconds = round(end - start)
+                    print(seconds)
+
                     return 
                 
         if s.have_voice == True:
@@ -329,11 +343,12 @@ class Training(threading.Thread):
         time.sleep(2)
 
     def Time_to_check_camera_full_explanation(self, csv_path):
+        start = time.perf_counter()
         inter_stages = [
             (screen.What_inter, "what Finished inter problem"),
             (screen.Why_inter, "why Finished inter problem"),
             (screen.How_inter, "how Finished inter problem"),
-            (screen.Continue, "Finished inter check, no solution found"),
+            (screen.continue_inter, "Finished inter check, no solution found"),
         ]
         for frame, message in inter_stages[:-1]:  # Exclude the "Continue" stage for now
             s.screen.switch_frame(frame)
@@ -342,7 +357,6 @@ class Training(threading.Thread):
             time.sleep(2)
             
             for _ in range(15):  # Check for 15 seconds in 1-second intervals
-                self.is_camera_Active()
                 time.sleep(1)
                 
                 if s.Fake_camera:  # If speaker is active
@@ -351,18 +365,22 @@ class Training(threading.Thread):
                     say("Fix_inter_Good")
                     s.screen.switch_frame(screen.EyesPage)
 
+                    end = time.perf_counter()
+                    seconds = round(end - start)
+                    print(seconds)
+
         if s.camera_not_recognize == True:
             if s.have_voice == True:
                 say("continue_inter")
             else:
-                s.screen.switch_frame(screen.Continue_inter)
+                s.screen.switch_frame(screen.continue_inter)
             print(inter_stages[-1][1])
             time.sleep(2)
         
 
     def Time_to_check_camera_without_explanation(self):
+        start = time.perf_counter()
         for _ in range(120):  # Wait for 120 sec in 1-second intervals
-            self.is_camera_Active()
             time.sleep(1)
             if s.Fake_camera:  # Continuously check for port output
                 if s.have_voice == True:
@@ -372,6 +390,9 @@ class Training(threading.Thread):
                     s.screen.switch_frame(screen.fix_inter_good)
                 print("Finished inter problem")
                 s.camera_not_recognize = False
+                end = time.perf_counter()
+                seconds = round(end - start)
+                print(seconds)
                 return
             
         if s.have_voice == True:
@@ -381,34 +402,6 @@ class Training(threading.Thread):
         print("Finished hardware check, no solution found")
         time.sleep(2)
         return
-
-    # def is_camera_Active(self):
-    #     if msvcrt.kbhit():
-    #         key = msvcrt.getch()
-    #         if key == b' ':  # SPACE
-    #             s.Fake_camera = True
-
-    # def is_camera_Active(self):
-    #     for event in pygame.event.get():
-    #         if event.type == pygame.KEYDOWN:
-    #             if event.key == pygame.K_SPACE:
-    #                 s.Fake_camera = True
-
-    def is_camera_Active(self):
-        path = r"C:\Users\owner\Desktop\רמקולקול\חיבורמצלמה.rtf"  # Update with the correct path #צריל להבין אם צריך
-        try:
-            # Check if the file exists
-            if os.path.exists(path):
-                s.Fake_camera = True
-                return True
-            else:
-                print(f"File does not exist at: {path}")
-                return False
-        except Exception as e:
-            print(f"Error while trying to import the file: {e}")
-        return True
-
-
 
 
 if __name__ == "__main__":

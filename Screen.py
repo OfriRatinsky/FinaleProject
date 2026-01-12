@@ -10,6 +10,8 @@ class Screen(tk.Tk):
     def __init__(self):
         print("screen start")
         tk.Tk.__init__(self, className='Poppy')
+        self.bind_all("<space>", self._on_space)#הוספתי לבדיקה של הרווח
+
         self._frame = None
         self.switch_frame(EyesPage)
         self["bg"] = "#F3FCFB"
@@ -25,6 +27,11 @@ class Screen(tk.Tk):
         self._frame = new_frame
         self._frame.pack()
         self.current_frame_name = frame_class.__name__
+
+    def _on_space(self, event):#מאזין לרווח רק כשיש תקלה
+        if s.camera_not_recognize:
+            s.Fake_camera = True
+            print("SPACE -> Fake_camera=True")
 
 
 ##### need to make sure all paths are good##############
@@ -212,6 +219,9 @@ class FullScreenApp(object):
         print(geom, self._geom)
         self.master.geometry(self._geom)
         self._geom = geom
+
+
+
 
 if __name__ == "__main__":
     s.screen = Screen()

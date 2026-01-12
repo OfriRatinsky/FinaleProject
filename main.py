@@ -47,7 +47,7 @@ if __name__ == '__main__':
     s.camera_done = False
     s.robot_count = False #true- robot count, false- by user
     s.try_again = False
-    s.team = 1#הוספתי
+    s.team = 2#הוספתי
     s.have_voice = True #הוספתי
     s.Fake_camera = False
     s.camera_not_recognize = False
