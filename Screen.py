@@ -35,6 +35,13 @@ class Screen(tk.Tk):
 
 
 ##### need to make sure all paths are good##############
+class questionnaire(tk.Frame):
+    def __init__(self, master):
+        tk.Frame.__init__(self, master)
+        image = Image.open('pictures//questionnaire.png')
+        self.photo_image = ImageTk.PhotoImage(image)  # self. - for keeping the photo in memory so it will be shown
+        tk.Label(self, image=self.photo_image).pack()
+
 class EyesPage(tk.Frame):
     def __init__(self, master):
         tk.Frame.__init__(self, master)

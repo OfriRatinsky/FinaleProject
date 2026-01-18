@@ -77,7 +77,7 @@ class Training(threading.Thread):
             exercise_names = ["raise_arms_horizontally", "bend_elbows", "raise_arms_bend_elbows","break", "open_and_close_arms_90","raise_arms_forward", "open_and_close_arms"]
         if s.team == 8:
             #exercise_names = ["raise_arms_horizontally", "raise_arms_forward", "raise_arms_bend_elbows","break", "open_and_close_arms_90", "bend_elbows", "open_and_close_arms"]
-            exercise_names = ["raise_arms_forward"]
+            exercise_names = ["raise_arms_horizontally","break"]
 
         for e in exercise_names:
             time.sleep(2) # wait between exercises
@@ -145,7 +145,9 @@ class Training(threading.Thread):
         s.success_exercise = False
         print("TRAINING: Exercise ", name, " start")
         if(name == "break"): #Questionnaire completion
+            s.screen.switch_frame(screen.questionnaire)
             input("Press Enter to continue...")
+            s.screen.switch_frame(screen.EyesPage)
             return
         if(name== "raise_arms_forward"):
             s.camera_not_recognize = True
@@ -173,8 +175,11 @@ class Training(threading.Thread):
             s.req_exercise = name
         while s.req_exercise == name:
             time.sleep(0.001)  # Prevents the MP to stuck
-       # if s.success_exercise:
-        print("TRAINING: Exercise ", name, " done")
+        if s.success_exercise:
+            if s.have_voice == True:
+                say(self.random_encouragement())
+            else:
+                s.screen.switch_frame(self.random_encouragement_write())
         time.sleep(1)
 
 
@@ -460,6 +465,13 @@ class Training(threading.Thread):
             "Feedback Stage (if adaptive)": feedback_stage or ""
         })
 
+    def random_encouragement_write(self):
+        enco = ["well_done", "very_good", "excellent"]
+        return random.choice(enco)
+
+    def random_encouragement(self):
+        enco = ["well done", "very good", "excellent"]
+        return random.choice(enco)
 
 
 if __name__ == "__main__":

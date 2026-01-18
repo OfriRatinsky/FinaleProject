@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
     # Training variables initialization
     s.exercise_amount = 6 #מתוקן לכמות שאנחנו עושות
-    s.rep = 7
+    s.rep = 8
     s.req_exercise = ""
     s.finish_workout = False
     s.waved = False
