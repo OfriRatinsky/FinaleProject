@@ -33,8 +33,8 @@ class Training(threading.Thread):
         say('lets start')
         time.sleep(2.5)
         print("Training: finish waving")
-        self.warm_up()
-        time.sleep(8)
+        #self.warm_up()
+        time.sleep(5)
         print("Training: finish warmup")
         s.poppy_done = False  # AFTER HELLO
         s.camera_done = False  # AFTER HELLO
@@ -63,8 +63,8 @@ class Training(threading.Thread):
 
            #exercise_names = ["raise_arms_horizontally","bend_elbows",  "raise_arms_bend_elbows","break","open_and_close_arms_90","raise_arms_forward",  "open_and_close_arms" ]
         if s.team == 2:
-            exercise_names = ["raise_arms_forward"]
-            #exercise_names = ["raise_arms_horizontally", "raise_arms_forward", "raise_arms_bend_elbows","break", "open_and_close_arms_90","bend_elbows", "open_and_close_arms"]
+            #exercise_names = ["raise_arms_forward"]
+            exercise_names = ["raise_arms_horizontally", "raise_arms_forward", "raise_arms_bend_elbows","break", "open_and_close_arms_90","bend_elbows", "open_and_close_arms"]
         if s.team == 3:
             exercise_names = ["raise_arms_horizontally", "bend_elbows", "raise_arms_bend_elbows","break", "open_and_close_arms_90","raise_arms_forward", "open_and_close_arms"]
         if s.team == 4:
@@ -76,7 +76,8 @@ class Training(threading.Thread):
         if s.team == 7:
             exercise_names = ["raise_arms_horizontally", "bend_elbows", "raise_arms_bend_elbows","break", "open_and_close_arms_90","raise_arms_forward", "open_and_close_arms"]
         if s.team == 8:
-            exercise_names = ["raise_arms_horizontally", "raise_arms_forward", "raise_arms_bend_elbows","break", "open_and_close_arms_90", "bend_elbows", "open_and_close_arms"]
+            #exercise_names = ["raise_arms_horizontally", "raise_arms_forward", "raise_arms_bend_elbows","break", "open_and_close_arms_90", "bend_elbows", "open_and_close_arms"]
+            exercise_names = ["raise_arms_forward"]
 
         for e in exercise_names:
             time.sleep(2) # wait between exercises
@@ -209,7 +210,7 @@ class Training(threading.Thread):
             time.sleep(2)
             print(f"Checking for speaker activity during '{frame.__name__}'")
             
-            for _ in range(40):  # Check for 40 seconds in 1-second intervals
+            for _ in range(30):  # Check for 30 seconds in 1-second intervals
                 s.Fake_speaker = self.is_speaker_Active(csv_path)
                 time.sleep(1)
                 
@@ -240,8 +241,22 @@ class Training(threading.Thread):
             s.screen.switch_frame(frame)
             time.sleep(2)
             print(f"Checking for speaker activity during '{frame.__name__}'")
-            
-            for _ in range(15):  # Check for 15 seconds in 1-second intervals
+            if frame == screen.How_inter:
+                for _ in range(70):  # Check for 5 seconds in 1-second intervals
+                    time.sleep(1)
+                    if s.Fake_speaker:  # If speaker is active
+                        s.have_voice = True
+                        print(message)
+                        say("Fix_Hardware_Good")
+                        s.screen.switch_frame(screen.EyesPage)
+                        end = time.perf_counter()
+                        seconds = round(end - start)
+                        print(seconds)
+                        self.log_repair("hardware", "full", seconds)
+                        return
+
+            for _ in range(5):
+                # Check for 5 seconds in 1-second intervals
                 s.Fake_speaker = self.is_speaker_Active(csv_path)
                 time.sleep(1)
                 
@@ -264,7 +279,7 @@ class Training(threading.Thread):
 
     def Time_to_check_voice_without_explanation(self, csv_path):
         start = time.perf_counter()
-        for _ in range(120):  # Wait for 120 sec in 1-second intervals
+        for _ in range(90):  # Wait for 90 sec in 1-second intervals
             s.Fake_speaker = self.is_speaker_Active(csv_path)
             time.sleep(1)
             if s.Fake_speaker:  # Continuously check for port output
@@ -330,7 +345,7 @@ class Training(threading.Thread):
                 say(frame.__name__)#פה שניתי!!!
             time.sleep(2)
             
-            for _ in range(40):  # Check for 40 seconds in 1-second intervals
+            for _ in range(30):  # Check for 40 seconds in 1-second intervals
                 #self.is_camera_Active()
                 time.sleep(1)
                 
@@ -367,8 +382,24 @@ class Training(threading.Thread):
             if s.have_voice==True:
                 say(frame.__name__)
             time.sleep(2)
-            
-            for _ in range(15):  # Check for 15 seconds in 1-second intervals
+
+            if frame == screen.How_inter:
+                for _ in range(70):  # Check for 5 seconds in 1-second intervals
+                    time.sleep(1)
+
+                    if s.Fake_camera:  # If speaker is active
+                        s.camera_not_recognize = False
+                        print(message)
+                        say("Fix_inter_good")
+                        s.screen.switch_frame(screen.EyesPage)
+                        end = time.perf_counter()
+                        seconds = round(end - start)
+                        print(seconds)
+                        self.log_repair("interaction", "full", seconds)
+                        return
+
+
+            for _ in range(5):  # Check for 5 seconds in 1-second intervals
                 time.sleep(1)
                 
                 if s.Fake_camera:  # If speaker is active
@@ -376,12 +407,13 @@ class Training(threading.Thread):
                     print(message)
                     say("Fix_inter_good")
                     s.screen.switch_frame(screen.EyesPage)
-
                     end = time.perf_counter()
                     seconds = round(end - start)
                     print(seconds)
                     self.log_repair("interaction", "full", seconds)
                     return
+
+
         if s.camera_not_recognize == True:
             if s.have_voice == True:
                 say("continue_inter")
@@ -393,7 +425,7 @@ class Training(threading.Thread):
 
     def Time_to_check_camera_without_explanation(self):
         start = time.perf_counter()
-        for _ in range(120):  # Wait for 120 sec in 1-second intervals
+        for _ in range(90):  # Wait for 120 sec in 1-second intervals
             time.sleep(1)
             if s.Fake_camera:  # Continuously check for port output
                 if s.have_voice == True:
