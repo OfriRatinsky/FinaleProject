@@ -33,7 +33,7 @@ class Training(threading.Thread):
         say('lets start')
         time.sleep(2.5)
         print("Training: finish waving")
-        #self.warm_up()
+        self.warm_up()
         time.sleep(5)
         print("Training: finish warmup")
         s.poppy_done = False  # AFTER HELLO
@@ -47,7 +47,7 @@ class Training(threading.Thread):
         # TODO - adding random choice of exercises.
         exercise_names = ["open_and_close_arms_90","open_and_close_arms"]
         for e in exercise_names:
-            time.sleep(1) # wait between exercises
+            time.sleep(2) # wait between exercises
             self.run_exercise(e)
             while (not s.poppy_done) or (not s.camera_done):
                 print("not done")
@@ -59,25 +59,26 @@ class Training(threading.Thread):
     def start_training(self):# כל פעם שולח לתרגילים ככה שבתרגיל השני והחמישי יהיו תקלות מתחלפות
         print("Training: start exercises")
         if s.team == 1:
-            exercise_names = ["bend_elbows"]#, "raise_arms_forward","open_and_close_arms_90"]
+            #exercise_names = ["bend_elbows"]#, "raise_arms_forward","open_and_close_arms_90"]
 
-           #exercise_names = ["raise_arms_horizontally","bend_elbows",  "raise_arms_bend_elbows","break","open_and_close_arms_90","raise_arms_forward",  "open_and_close_arms" ]
+           exercise_names = ["raise_arms_horizontally","bend_elbows",  "raise_arms_bend_elbows","break","open_and_close_arms_90","raise_arms_forward",  "open_and_close_arms" ]
         if s.team == 2:
-            #exercise_names = ["raise_arms_forward"]
+            #exercise_names = ["bend_elbows"]
             exercise_names = ["raise_arms_horizontally", "raise_arms_forward", "raise_arms_bend_elbows","break", "open_and_close_arms_90","bend_elbows", "open_and_close_arms"]
         if s.team == 3:
             exercise_names = ["raise_arms_horizontally", "bend_elbows", "raise_arms_bend_elbows","break", "open_and_close_arms_90","raise_arms_forward", "open_and_close_arms"]
         if s.team == 4:
             exercise_names = ["raise_arms_horizontally", "raise_arms_forward", "raise_arms_bend_elbows","break", "open_and_close_arms_90", "bend_elbows", "open_and_close_arms"]
         if s.team == 5:
-            exercise_names = ["raise_arms_horizontally", "bend_elbows", "raise_arms_bend_elbows","break", "open_and_close_arms_90", "raise_arms_forward", "open_and_close_arms"]
+            exercise_names = ["open_and_close_arms_90","open_and_close_arms"]
+            #exercise_names = ["raise_arms_horizontally", "bend_elbows", "raise_arms_bend_elbows","break", "open_and_close_arms_90", "raise_arms_forward", "open_and_close_arms"]
         if s.team == 6:
             exercise_names = ["raise_arms_horizontally", "raise_arms_forward", "raise_arms_bend_elbows","break", "open_and_close_arms_90", "bend_elbows", "open_and_close_arms"]
         if s.team == 7:
             exercise_names = ["raise_arms_horizontally", "bend_elbows", "raise_arms_bend_elbows","break", "open_and_close_arms_90","raise_arms_forward", "open_and_close_arms"]
         if s.team == 8:
-            #exercise_names = ["raise_arms_horizontally", "raise_arms_forward", "raise_arms_bend_elbows","break", "open_and_close_arms_90", "bend_elbows", "open_and_close_arms"]
-            exercise_names = ["raise_arms_horizontally","break"]
+            exercise_names = ["raise_arms_horizontally", "raise_arms_forward", "raise_arms_bend_elbows","break", "open_and_close_arms_90", "bend_elbows", "open_and_close_arms"]
+            #exercise_names = ["raise_arms_horizontally","break"]
 
         for e in exercise_names:
             time.sleep(2) # wait between exercises
@@ -129,10 +130,10 @@ class Training(threading.Thread):
     #     print("TRAINING: Exercise ", name, " done")
     #     time.sleep(1)
 
-    def What_To_write (self,name):####לשנות תרגילים
-        if(name=='raise_arms_horizontally'):#######
+    def What_To_write (self,name):
+        if(name=='raise_arms_horizontally'):
             s.screen.switch_frame(screen.raise_arms_horizontally)
-        if(name=='open_and_close_arms_90'):#########
+        if(name=='open_and_close_arms_90'):
             s.screen.switch_frame(screen.open_and_close_arms_90)
         if(name=='raise_arms_bend_elbows'):
             s.screen.switch_frame(screen.raise_arms_bend_elbows)
@@ -246,13 +247,15 @@ class Training(threading.Thread):
             s.screen.switch_frame(frame)
             time.sleep(2)
             print(f"Checking for speaker activity during '{frame.__name__}'")
-            if frame == screen.How_inter:
+            if message == "how Finished hardware problem":
                 for _ in range(70):  # Check for 5 seconds in 1-second intervals
+                    s.Fake_speaker = self.is_speaker_Active(csv_path)
                     time.sleep(1)
                     if s.Fake_speaker:  # If speaker is active
                         s.have_voice = True
                         print(message)
                         say("Fix_Hardware_Good")
+                        time.sleep(2)
                         s.screen.switch_frame(screen.EyesPage)
                         end = time.perf_counter()
                         seconds = round(end - start)
@@ -388,7 +391,7 @@ class Training(threading.Thread):
                 say(frame.__name__)
             time.sleep(2)
 
-            if frame == screen.How_inter:
+            if message == "how Finished inter problem":
                 for _ in range(70):  # Check for 5 seconds in 1-second intervals
                     time.sleep(1)
 
@@ -466,7 +469,7 @@ class Training(threading.Thread):
         })
 
     def random_encouragement_write(self):
-        enco = ["well_done", "very_good", "excellent"]
+        enco = [screen.well_done, screen.very_good, screen.excellent]
         return random.choice(enco)
 
     def random_encouragement(self):

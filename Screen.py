@@ -114,6 +114,13 @@ class raise_arms_bend_elbows(tk.Frame):
         image = Image.open('pictures//raise_arms_bend_elbows.png')
         self.photo_image = ImageTk.PhotoImage(image)  # self. - for keeping the photo in memory so it will be shown
         tk.Label(self, image=self.photo_image).pack()
+class open_and_close_arms_90(tk.Frame):
+    def __init__(self, master):
+        tk.Frame.__init__(self, master)
+        image = Image.open('pictures//open_and_close_arms_90.png')
+        self.photo_image = ImageTk.PhotoImage(image)  # self. - for keeping the photo in memory so it will be shown
+        tk.Label(self, image=self.photo_image).pack()
+
 class finished_impossible_ex_good(tk.Frame): 
     def __init__(self, master):
         tk.Frame.__init__(self, master)
